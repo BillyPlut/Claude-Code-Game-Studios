@@ -5,31 +5,32 @@
 
 ## Engine & Language
 
-- **Engine**: [TO BE CONFIGURED — run /setup-engine]
-- **Language**: [TO BE CONFIGURED]
-- **Rendering**: [TO BE CONFIGURED]
-- **Physics**: [TO BE CONFIGURED]
+- **Engine**: Unreal Engine 5.7
+- **Language**: C++ (primary), Blueprint (gameplay prototyping)
+- **Rendering**: Lumen (Global Illumination), Nanite (virtualized geometry)
+- **Physics**: Chaos Physics
 
 ## Input & Platform
 
 <!-- Written by /setup-engine. Read by /ux-design, /ux-review, /test-setup, /team-ui, and /dev-story -->
 <!-- to scope interaction specs, test helpers, and implementation to the correct input methods. -->
 
-- **Target Platforms**: [TO BE CONFIGURED — e.g., PC, Console, Mobile, Web]
-- **Input Methods**: [TO BE CONFIGURED — e.g., Keyboard/Mouse, Gamepad, Touch, Mixed]
-- **Primary Input**: [TO BE CONFIGURED — the dominant input for this game]
-- **Gamepad Support**: [TO BE CONFIGURED — Full / Partial / None]
-- **Touch Support**: [TO BE CONFIGURED — Full / Partial / None]
-- **Platform Notes**: [TO BE CONFIGURED — any platform-specific UX constraints]
+- **Target Platforms**: PC (Steam / Epic)
+- **Input Methods**: Keyboard/Mouse, Gamepad
+- **Primary Input**: Gamepad
+- **Gamepad Support**: Full
+- **Touch Support**: None
+- **Platform Notes**: PC-first. All UI must support both keyboard/mouse and gamepad navigation. No hover-only interactions.
 
 ## Naming Conventions
 
-- **Classes**: [TO BE CONFIGURED]
-- **Variables**: [TO BE CONFIGURED]
-- **Signals/Events**: [TO BE CONFIGURED]
-- **Files**: [TO BE CONFIGURED]
-- **Scenes/Prefabs**: [TO BE CONFIGURED]
-- **Constants**: [TO BE CONFIGURED]
+- **Classes**: Prefixed PascalCase — `A` (Actor), `U` (UObject), `F` (struct), `I` (Interface), `E` (enum)
+- **Variables**: PascalCase (e.g., `MoveSpeed`, `MaxHealth`)
+- **Functions**: PascalCase (e.g., `TakeDamage()`, `GetCurrentHealth()`)
+- **Booleans**: `b` prefix (e.g., `bIsAlive`, `bIsGrounded`)
+- **Files**: Match class name without prefix (e.g., `PlayerController.h` / `PlayerController.cpp`)
+- **Scenes/Levels**: PascalCase .umap (e.g., `Level_GoldenPeople.umap`)
+- **Constants**: PascalCase or `ALL_CAPS` for macros
 
 ## Performance Budgets
 
@@ -40,7 +41,7 @@
 
 ## Testing
 
-- **Framework**: [TO BE CONFIGURED]
+- **Framework**: Unreal Automation Framework (FAutomationTestBase) + Functional Tests
 - **Minimum Coverage**: [TO BE CONFIGURED]
 - **Required Tests**: Balance formulas, gameplay systems, networking (if applicable)
 
@@ -65,23 +66,23 @@
 <!-- Read by /code-review, /architecture-decision, /architecture-review, and team skills -->
 <!-- to know which specialist to spawn for engine-specific validation. -->
 
-- **Primary**: [TO BE CONFIGURED — run /setup-engine]
-- **Language/Code Specialist**: [TO BE CONFIGURED]
-- **Shader Specialist**: [TO BE CONFIGURED]
-- **UI Specialist**: [TO BE CONFIGURED]
-- **Additional Specialists**: [TO BE CONFIGURED]
-- **Routing Notes**: [TO BE CONFIGURED]
+- **Primary**: unreal-specialist
+- **Language/Code Specialist**: ue-blueprint-specialist (Blueprint graphs) or unreal-specialist (C++)
+- **Shader Specialist**: unreal-specialist (Materials, Lumen configuration, Niagara VFX)
+- **UI Specialist**: ue-umg-specialist (UMG widgets, CommonUI, input routing, widget styling)
+- **Additional Specialists**: ue-gas-specialist (Gameplay Ability System, attributes, gameplay effects), ue-replication-specialist (property replication, RPCs — for future multiplayer if needed)
+- **Routing Notes**: Invoke primary for C++ architecture and broad engine decisions. Invoke Blueprint specialist for Blueprint graph architecture and BP/C++ boundary design. Invoke GAS specialist for all ability and attribute code. Invoke UMG specialist for all UI implementation.
 
 ### File Extension Routing
 
 <!-- Skills use this table to select the right specialist per file type. -->
-<!-- If a row says [TO BE CONFIGURED], fall back to Primary for that file type. -->
 
-| File Extension / Type | Specialist to Spawn |
-|-----------------------|---------------------|
-| Game code (primary language) | [TO BE CONFIGURED] |
-| Shader / material files | [TO BE CONFIGURED] |
-| UI / screen files | [TO BE CONFIGURED] |
-| Scene / prefab / level files | [TO BE CONFIGURED] |
-| Native extension / plugin files | [TO BE CONFIGURED] |
-| General architecture review | Primary |
+| File Extension / Type                              | Specialist to Spawn        |
+|----------------------------------------------------|----------------------------|
+| Game code (.cpp, .h files)                         | unreal-specialist          |
+| Shader / material files (.usf, .ush, Material assets) | unreal-specialist       |
+| UI / screen files (.umg, UMG Widget Blueprints)    | ue-umg-specialist          |
+| Scene / level files (.umap, .uasset)               | unreal-specialist          |
+| Plugin files (.uplugin, modules)                   | unreal-specialist          |
+| Blueprint graphs (.uasset BP classes)              | ue-blueprint-specialist    |
+| General architecture review                        | unreal-specialist          |

@@ -162,6 +162,21 @@ You have access to the Task tool to delegate to your sub-specialists. Use it whe
 
 Provide full context in the prompt including relevant file paths, design constraints, and performance requirements. Launch independent sub-specialist tasks in parallel when possible.
 
+## Version Awareness
+
+**CRITICAL**: Your training data has a knowledge cutoff (~UE 5.3/5.4). Before suggesting any
+engine API code, you MUST:
+
+1. Read `docs/engine-reference/unreal/VERSION.md` to confirm the engine version and risk level
+2. Check `docs/engine-reference/unreal/deprecated-apis.md` for any APIs you plan to use
+3. Check `docs/engine-reference/unreal/breaking-changes.md` for relevant version transitions
+4. Read `docs/engine-reference/unreal/current-best-practices.md` for patterns that changed post-cutoff
+
+If an API you plan to suggest is not confirmed in the reference docs and was potentially
+introduced or changed after May 2025, use WebSearch to verify against official Epic documentation.
+
+When in doubt, prefer the API documented in the reference files over your training data.
+
 ## When Consulted
 Always involve this agent when:
 - Adding a new Unreal plugin or subsystem

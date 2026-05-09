@@ -1,170 +1,87 @@
-# Unreal Engine 5.7 — Deprecated APIs
+# Unreal Engine Deprecated & Removed APIs — 5.4 → 5.7
 
-**Last verified:** 2026-02-13
+Last verified: 2026-05-08
 
-Quick lookup table for deprecated APIs and their replacements.
-Format: **Don't use X** → **Use Y instead**
+## REMOVED (Hard Errors — Will Not Compile)
 
----
-
-## Input
-
-| Deprecated | Replacement | Notes |
-|------------|-------------|-------|
-| `InputComponent->BindAction()` | Enhanced Input `BindAction()` | New input system |
-| `InputComponent->BindAxis()` | Enhanced Input `BindAxis()` | New input system |
-| `PlayerController->GetInputAxisValue()` | Enhanced Input Action Values | New input system |
-
-**Migration:** Install Enhanced Input plugin, create Input Actions and Input Mapping Contexts.
+| Removed API | Version | Replacement | Notes |
+|-------------|---------|-------------|-------|
+| `AddReplicatedLooseGameplayTags()` | 5.7 | Gameplay Effect or Ability Set tag replication | GAS |
+| `RemoveReplicatedLooseGameplayTags()` | 5.7 | GE / Ability Set tag replication | GAS |
+| `UReplicationBridge` (as base class) | 5.7 | `UObjectReplicationBridge` (direct dep) | Iris networking |
+| `PlayerMappableOptions` struct members on `FEnhancedActionKeyMapping` | 5.5 | `UEnhancedInputUserSettings`, `UEnhancedPlayerMappableKeyProfile` | Enhanced Input |
+| VSM HZB mode "1" | 5.6 | N/A — simplified code path | Remove references |
 
 ---
 
-## Rendering
+## DEPRECATED (Compile Warnings — Will Be Removed)
 
-| Deprecated | Replacement | Notes |
-|------------|-------------|-------|
-| Legacy material nodes | Substrate material nodes | Substrate is production-ready in 5.7 |
-| Forward shading (default) | Deferred + Lumen | Lumen is default in UE5 |
-| Old lighting workflow | Lumen Global Illumination | Real-time GI |
-
----
-
-## World Building
-
-| Deprecated | Replacement | Notes |
-|------------|-------------|-------|
-| UE4 World Composition | World Partition (UE5) | Streaming large worlds |
-| Level Streaming Volumes | World Partition Data Layers | Better level streaming |
+| Deprecated API | Since | Replacement | Notes |
+|----------------|-------|-------------|-------|
+| `EGameplayAbilityInstancingPolicy::NonInstanced` | 5.5 | `InstancedPerActor` or `InstancedPerExecution` | GAS |
+| `FTicker` | 5.5 | `FTSTicker` | Same interface |
+| `UUMGSequencePlayer` (direct subclass/reference) | 5.6 | New lightweight runner structs | UMG |
+| `IMovieScenePlayer` interface | 5.6 | New animation player architecture | UMG |
+| `r.UseClusteredDeferredShading` (CVar) | 5.7 | Current deferred path (default) | Rendering |
+| `r.Mobile.UseClusteredDeferredShading` (CVar) | 5.7 | Current mobile deferred path | Rendering |
+| Legacy FBX Import pipeline | 5.5 | Interchange plugin | Soft deprecation |
+| `Profiler*` modules in Build.cs | 5.6 | `TraceLog`, `TraceAnalysis`, UnrealInsights | Build |
 
 ---
 
-## Animation
+## BEHAVIOR CHANGED (Same API, Different Result)
 
-| Deprecated | Replacement | Notes |
-|------------|-------------|-------|
-| Old animation retargeting | IK Rig + IK Retargeter | UE5 retargeting system |
-| Legacy control rig | Control Rig 2.0 | Production-ready rigging |
-
----
-
-## Gameplay
-
-| Deprecated | Replacement | Notes |
-|------------|-------------|-------|
-| `UGameplayStatics::LoadStreamLevel()` | World Partition streaming | Use Data Layers |
-| Hardcoded input bindings | Enhanced Input system | Rebindable, modular input |
+| API / CVar | Change | Version |
+|------------|--------|---------|
+| `r.Lumen.ScreenProbeGather.MaxRayIntensity` | Default **40 → 10** | 5.6 |
+| `r.VT.PageFreeThreshold` | Default **60 → 15** | 5.6 |
+| `r.Shadow.Virtual.Cache 0` | Now "fast uncached path", not "full disable" | 5.6 |
+| `r.Lumen.TraceMeshSDFs` | Default **1 → 0** (SWRT off) | 5.7 |
+| `FMassProcessingPhase.bRunInParallelMode` | Default **false → true** | 5.6 |
+| `r.Nanite.Culling.MinLOD` | Now **enabled by default** | 5.7 |
 
 ---
 
-## Niagara (VFX)
+## Code Migration Snippets
 
-| Deprecated | Replacement | Notes |
-|------------|-------------|-------|
-| Cascade particle system | Niagara | Cascade is fully deprecated |
-
----
-
-## Audio
-
-| Deprecated | Replacement | Notes |
-|------------|-------------|-------|
-| Old audio mixer | MetaSounds | Procedural audio system |
-| Sound Cue (for complex logic) | MetaSounds | More powerful, node-based |
-
----
-
-## Networking
-
-| Deprecated | Replacement | Notes |
-|------------|-------------|-------|
-| `DOREPLIFETIME()` (basic) | `DOREPLIFETIME_CONDITION()` | Conditional replication for optimization |
-
----
-
-## C++ Scripting
-
-| Deprecated | Replacement | Notes |
-|------------|-------------|-------|
-| `TSharedPtr<T>` for UObjects | `TObjectPtr<T>` | UE5 type-safe pointers |
-| Manual RTTI checks | `Cast<T>()` / `IsA<T>()` | Type-safe casting |
-
----
-
-## Quick Migration Patterns
-
-### Input Example
+### Enhanced Input (5.5+)
 ```cpp
-// ❌ Deprecated
-void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
-    PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-}
+// BEFORE — DELETED in 5.5:
+FEnhancedActionKeyMapping Mapping;
+Mapping.PlayerMappableOptions.Name = FName("Jump");  // ERROR
 
-// ✅ Enhanced Input
-#include "EnhancedInputComponent.h"
-
-void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
-    UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(PlayerInputComponent);
-    if (EIC) {
-        EIC->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-    }
-}
+// AFTER:
+UEnhancedInputUserSettings* Settings = GetEnhancedInputUserSettings();
+UEnhancedPlayerMappableKeyProfile* Profile = Settings->GetCurrentKeyProfile();
+Profile->SetPlayerMappedKey(FName("Jump"), FKey("Space"));
 ```
 
-### Material Example
+### GAS Loose Tags (5.7+)
 ```cpp
-// ❌ Deprecated: Legacy material
-// Use standard material graph (still works but not recommended)
+// BEFORE — REMOVED in 5.7:
+AbilitySystemComponent->AddReplicatedLooseGameplayTags(Tags);    // ERROR
+AbilitySystemComponent->RemoveReplicatedLooseGameplayTags(Tags); // ERROR
 
-// ✅ Substrate Material
-// Enable: Project Settings > Engine > Substrate > Enable Substrate
-// Use Substrate nodes in material editor
+// AFTER: Apply via Gameplay Effect with Granted Tags configured in the GE asset.
+FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
+FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(TagGrantGE, 1.0f, Context);
+ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
 ```
 
-### World Partition Example
+### GAS Instancing (5.5+)
 ```cpp
-// ❌ Deprecated: Level streaming volumes
-// Load/unload levels manually
+// BEFORE — deprecated in 5.5:
+InstancingPolicy = EGameplayAbilityInstancingPolicy::NonInstanced; // WARNING
 
-// ✅ World Partition
-// Enable: World Settings > Enable World Partition
-// Use Data Layers for streaming
+// AFTER:
+InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 ```
 
-### Particle System Example
+### Threading (5.5+)
 ```cpp
-// ❌ Deprecated: Cascade
-UParticleSystemComponent* PSC = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Particles"));
+// BEFORE — deprecated in 5.5:
+FTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateUObject(this, &UMyClass::Tick));
 
-// ✅ Niagara
-UNiagaraComponent* NiagaraComp = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Niagara"));
+// AFTER:
+FTSTicker::GetCoreTicker().AddTicker(FTickerDelegate::CreateUObject(this, &UMyClass::Tick));
 ```
-
-### Audio Example
-```cpp
-// ❌ Deprecated: Sound Cue for complex logic
-// Use Sound Cue editor nodes
-
-// ✅ MetaSounds
-// Create MetaSound Source asset, use node-based audio
-```
-
----
-
-## Summary: UE 5.7 Tech Stack
-
-| Feature | Use This (2026) | Avoid This (Legacy) |
-|---------|------------------|----------------------|
-| **Input** | Enhanced Input | Legacy Input Bindings |
-| **Materials** | Substrate | Legacy Material System |
-| **Lighting** | Lumen + Megalights | Lightmaps + Limited Lights |
-| **Particles** | Niagara | Cascade |
-| **Audio** | MetaSounds | Sound Cue (for logic) |
-| **World Streaming** | World Partition | World Composition |
-| **Animation Retarget** | IK Rig + Retargeter | Old Retargeting |
-| **Geometry** | Nanite (high-poly) | Standard Static Mesh LODs |
-
----
-
-**Sources:**
-- https://docs.unrealengine.com/5.7/en-US/deprecated-and-removed-features/
-- https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-7-release-notes
