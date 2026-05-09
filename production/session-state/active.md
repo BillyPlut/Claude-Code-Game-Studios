@@ -1,7 +1,7 @@
 # Session State — Altyn Adam
 
 **Last updated**: 2026-05-08  
-**Current task**: Systems decomposition complete  
+**Current task**: Designing health-stamina-system GDD (5/27)  
 
 ## Status
 - [x] Engine configured: Unreal Engine 5.7
@@ -11,9 +11,9 @@
 - [ ] Architecture overview
 
 ## Next Action
-Design next system GDD — `audio-system.md` (Priority 3 in design order)
+Design next system GDD — `health-stamina-system.md` (Priority 5 in design order)
 
-Run `/design-system audio-system` to begin, or `/map-systems next` to auto-pick.
+Run `/design-system health-stamina-system` to begin, or `/map-systems next` to auto-pick.
 
 ## Key Decisions
 - Survival System removed from scope (water mechanics would complicate solo-dev scope)
@@ -37,6 +37,8 @@ Run `/design-system audio-system` to begin, or `/map-systems next` to auto-pick.
 - Next: /design-system character-controller (Priority 4 in design order)
 
 ## Session Update — 2026-05-09 (design-system)
-- Task: character-controller GDD — IN PROGRESS
+- Task: character-controller GDD — COMPLETE (all sections)
 - File: design/gdd/character-controller.md
-- Current section: Section B (Player Fantasy)
+- Key decisions: AAltynCharacter:ACharacter + CMC (no custom subclass at MVP); Walk 300 UU/s, Sprint 560 UU/s (3-phase: explosive/degrading/recovery), Crouch 150 UU/s (Kazakh squat posture); Dodge = lateral step-aside 180 UU (NOT roll), DodgeCooldown 1.2s, -40% hitbox frames 5–14; JumpZVelocity 380 UU/s (~75cm clearance); HardFallThreshold 150 UU (stumble only, no HP damage); OnMovementNoisePulse delegate (Crouch Idle 0.0, CrouchWalk 0.15, Walk 0.45, Dodge 0.30, Sprint 0.85, HardLanding 0.90); turning-in-place locomotion (not free-strafing); 3 idle variants (Calm/Aware/Tense) driven by Stealth System; bControllerActive flag for horse handoff; position restore from UAltynSaveGame on OnSaveLoaded
+- Per-system GDDs: 4/27 — input-system.md + save-load-system.md + audio-system.md + character-controller.md COMPLETE
+- Next: /design-system health-stamina-system (Priority 5 in design order)

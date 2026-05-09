@@ -2,7 +2,7 @@
 
 **Last updated**: 2026-05-09  
 **Total systems**: 27  
-**Designed**: 3 / 27  
+**Designed**: 4 / 27  
 
 ---
 
@@ -13,7 +13,7 @@
 | Input System | MVP | Complete | input-system.md |
 | Save / Load System | MVP | Complete | save-load-system.md |
 | Audio System | MVP | Complete | audio-system.md |
-| Character Controller | MVP | Not Started | — |
+| Character Controller | MVP | Complete | character-controller.md |
 | Health & Stamina System | MVP | Not Started | — |
 | Camera System | MVP | Not Started | — |
 | Stealth System | MVP | Not Started | — |
