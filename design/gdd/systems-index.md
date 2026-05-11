@@ -1,8 +1,8 @@
 # Altyn Adam — Systems Index
 
-**Last updated**: 2026-05-09  
+**Last updated**: 2026-05-11  
 **Total systems**: 27  
-**Designed**: 4 / 27  
+**Designed**: 9 / 27  
 
 ---
 
@@ -14,12 +14,12 @@
 | Save / Load System | MVP | Complete | save-load-system.md |
 | Audio System | MVP | Complete | audio-system.md |
 | Character Controller | MVP | Complete | character-controller.md |
-| Health & Stamina System | MVP | Not Started | — |
-| Camera System | MVP | Not Started | — |
-| Stealth System | MVP | Not Started | — |
+| Health & Stamina System | MVP | Complete | health-stamina-system.md |
+| Camera System | MVP | Complete | camera-system.md |
+| Stealth System | MVP | Complete | stealth-system.md |
 | Enemy AI System | MVP | Not Started | — |
-| Combat System | MVP | Not Started | — |
-| Dialogue & Choice System | MVP | Not Started | — |
+| Combat System | MVP | Complete | combat-system.md |
+| Dialogue & Choice System | MVP | Complete | dialogue-choice-system.md |
 | Memory System | MVP | Not Started | — |
 | Ability System | MVP | Not Started | — |
 | Armor / Fragment System | MVP | Not Started | — |
